@@ -1,62 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pagina de musica2</title>
-<div class="wallpaper"></div>
-    <div class="content">
-    </div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cake Animation con Audio Corregido</title>
+  <style>
+    @import url(https://fonts.googleapis.com/css?family=Lato:300italic);
+    html, body {
+      width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      background: #ee9ca7; font-family: 'Lato', sans-serif;
+    }
+    .cake { /* Candle styles... */ }
+    .fuego { /* Fire styles... */ }
+    /* Resto de tu CSS para pastel y texto */
+  </style>
 </head>
-  <h1>Eres la melodía que convierte mis días en poesía</h1>
+<body>
+  <!-- Tu animación de pastel aquí -->
+  <div class="cake"><div class="fuego"></div><div class="fuego"></div><div class="fuego"></div><div class="fuego"></div><div class="fuego"></div></div>
+  <svg id="cake" width="200" height="500" viewBox="0 0 200 500">
+    <!-- SVG completo omitido por brevedad -->
+  </svg>
+  <div class="text">
+    <h1>Happy Birthday Karen!</h1>
+  </div>
 
-  <!-- Música romántica opcional (puedes cambiar el archivo) -->
-  <!-- <audio controls autoplay loop>
-    <source src="tu-cancion-romantica.mp3" type="audio/mpeg">
-    Tu navegador no soporta audio.
-  </audio> -->
-
+  <!-- Audio persistente corregido -->
+  <audio id="backgroundMusic" loop preload="auto" muted>
+    <source src="mimusica.mp3" type="audio/mpeg">
+    Tu navegador no soporta el elemento de audio.
+  </audio>
   <script>
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.classList.add("heart");
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.animationDuration = 2 + Math.random() * 3 + "s";
-      document.body.appendChild(heart);
-
-      setTimeout(() => {
-        heart.remove();
-      }, 5000);
+    function setupMusic() {
+      const music = document.getElementById('backgroundMusic');
+      // Restablecer posición guardada
+      const savedTime = localStorage.getItem('musicCurrentTime');
+      if (savedTime) music.currentTime = parseFloat(savedTime);
+      // Intentar reproducir en silencio (permitido por políticas modernas)
+      music.play().catch(() => {});
+      music.addEventListener('play', () => localStorage.setItem('musicPlaying','true'));
+      music.addEventListener('pause', () => localStorage.setItem('musicPlaying','false'));
+      setInterval(() => {
+        localStorage.setItem('musicCurrentTime', music.currentTime);
+      }, 1000);
+      // Primero clic: quitar mute y reanudar audio
+      document.addEventListener('click', function startMusic() {
+        music.muted = false;
+        music.play().catch(e => console.log('Error al reproducir:', e));
+        document.removeEventListener('click', startMusic);
+      });
     }
-
-    setInterval(createHeart, 200);
+    document.addEventListener('DOMContentLoaded', setupMusic);
   </script>
-    <!-- Audio persistence snippet -->
-<audio id="backgroundMusic" loop>
-  <source src="mimusica.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
-<script>
-  function setupMusic() {
-    const music = document.getElementById('backgroundMusic');
-    const isMusicPlaying = localStorage.getItem('musicPlaying') === 'true';
-    const musicCurrentTime = localStorage.getItem('musicCurrentTime') || 0;
-    if (isMusicPlaying) {
-      music.currentTime = parseFloat(musicCurrentTime);
-      music.play().catch(error => console.log('Autoplay prevented', error));
-    }
-    music.addEventListener('play', () => localStorage.setItem('musicPlaying','true'));
-    music.addEventListener('pause', () => localStorage.setItem('musicPlaying','false'));
-    setInterval(() => {
-      localStorage.setItem('musicCurrentTime', music.currentTime);
-    }, 1000);
-    document.addEventListener('click', function startMusic() {
-      music.play().catch(error => console.log('Autoplay prevented', error));
-      document.removeEventListener('click', startMusic);
-    });
-  }
-  document.addEventListener('DOMContentLoaded', setupMusic);
-</script>
-
 </body>
 </html>
